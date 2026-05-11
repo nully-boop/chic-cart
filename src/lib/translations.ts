@@ -42,6 +42,9 @@ export const translations = {
     allCategories: 'All',
     noProducts: 'No products in this category',
     searchPlaceholder: 'Search products...',
+    noResultsTitle: 'No products found',
+    noResultsDescription: 'We couldn\'t find anything matching your search. Try a different term or browse all products.',
+    clearFilters: 'Clear filters',
   },
   fr: {
     // Navigation
