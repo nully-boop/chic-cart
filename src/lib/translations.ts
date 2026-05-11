@@ -87,6 +87,9 @@ export const translations = {
     allCategories: 'Tout',
     noProducts: 'Aucun produit dans cette catégorie',
     searchPlaceholder: 'Rechercher des produits...',
+    noResultsTitle: 'Aucun produit trouvé',
+    noResultsDescription: 'Nous n\'avons rien trouvé correspondant à votre recherche. Essayez un autre terme ou parcourez tous les produits.',
+    clearFilters: 'Effacer les filtres',
   },
 } as const;
 
