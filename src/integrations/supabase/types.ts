@@ -14,6 +14,84 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_users: {
+        Row: {
+          created_at: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          price: number
+          product_id: string | null
+          quantity: number
+          size: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          price: number
+          product_id?: string | null
+          quantity?: number
+          size?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          price?: number
+          product_id?: string | null
+          quantity?: number
+          size?: string | null
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          created_at: string
+          currency: string
+          customer_email: string | null
+          customer_name: string | null
+          id: string
+          status: string
+          total: number
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          id?: string
+          status?: string
+          total?: number
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          id?: string
+          status?: string
+          total?: number
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category: string | null
@@ -23,6 +101,8 @@ export type Database = {
           image_url: string
           name: string
           price: number
+          quantity: number
+          sizes: string[] | null
         }
         Insert: {
           category?: string | null
@@ -32,6 +112,8 @@ export type Database = {
           image_url: string
           name: string
           price: number
+          quantity?: number
+          sizes?: string[] | null
         }
         Update: {
           category?: string | null
@@ -41,6 +123,8 @@ export type Database = {
           image_url?: string
           name?: string
           price?: number
+          quantity?: number
+          sizes?: string[] | null
         }
         Relationships: []
       }

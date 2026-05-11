@@ -1,8 +1,11 @@
+import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Minus, Plus, Trash2, MessageCircle } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useCart } from '@/contexts/CartContext';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 interface CartSidebarProps {
@@ -13,13 +16,30 @@ interface CartSidebarProps {
 export function CartSidebar({ open, onOpenChange }: CartSidebarProps) {
   const { t } = useLanguage();
   const { items, removeItem, updateQuantity, totalPrice, clearCart } = useCart();
+  const productIds = useMemo(() => Array.from(new Set(items.map((item) => item.id))), [items]);
+
+  const { data: stockById } = useQuery({
+    queryKey: ['cart', 'stock', productIds],
+    queryFn: async () => {
+      if (productIds.length === 0) return new Map<string, number>();
+      const { data, error } = await supabase
+        .from('products')
+        .select('id, quantity')
+        .in('id', productIds);
+
+      if (error) throw error;
+
+      return new Map((data ?? []).map((product) => [product.id, Number(product.quantity ?? 0)]));
+    },
+    enabled: productIds.length > 0,
+  });
 
   const handleOrderViaAgent = () => {
     if (items.length === 0) return;
 
     // Format cart contents
     const itemsText = items
-      .map((item) => `${item.quantity}x ${item.name} ($${item.price.toFixed(2)})`)
+      .map((item) => `${item.quantity}x ${item.name}${item.size ? ` (${item.size})` : ''} ($${item.price.toFixed(2)})`)
       .join(', ');
     
     const message = `${t('orderMessage')} ${itemsText}. ${t('totalLabel')} $${totalPrice.toFixed(2)}`;
@@ -55,7 +75,7 @@ export function CartSidebar({ open, onOpenChange }: CartSidebarProps) {
             <div className="flex-1 overflow-y-auto py-6">
               <div className="space-y-6">
                 {items.map((item) => (
-                  <div key={item.id} className="flex gap-4 animate-fade-in">
+                  <div key={`${item.id}-${item.size ?? 'default'}`} className="flex gap-4 animate-fade-in">
                     {/* Item Image */}
                     <div className="h-24 w-20 flex-shrink-0 overflow-hidden bg-secondary">
                       <img
@@ -72,13 +92,24 @@ export function CartSidebar({ open, onOpenChange }: CartSidebarProps) {
                         <p className="mt-1 text-sm text-muted-foreground">
                           ${item.price.toFixed(2)}
                         </p>
+                        {item.size ? (
+                          <p className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">
+                            {t('sizesLabel')}: {item.size}
+                          </p>
+                        ) : null}
                       </div>
 
                       {/* Quantity Controls */}
                       <div className="flex items-center justify-between">
+                        {(() => {
+                          const stock = stockById?.get(item.id);
+                          const maxQuantity = Number.isFinite(stock) ? Math.max(0, stock) : undefined;
+                          const canIncrease = maxQuantity === undefined || item.quantity < maxQuantity;
+
+                          return (
                         <div className="flex items-center gap-2">
                           <button
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            onClick={() => updateQuantity(item.id, item.size, item.quantity - 1)}
                             className="flex h-7 w-7 items-center justify-center border border-border hover:bg-secondary transition-colors"
                             aria-label="Decrease quantity"
                           >
@@ -86,16 +117,25 @@ export function CartSidebar({ open, onOpenChange }: CartSidebarProps) {
                           </button>
                           <span className="w-8 text-center text-sm">{item.quantity}</span>
                           <button
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            onClick={() => {
+                              const nextQuantity = maxQuantity === undefined
+                                ? item.quantity + 1
+                                : Math.min(maxQuantity, item.quantity + 1);
+                              if (nextQuantity === item.quantity) return;
+                              updateQuantity(item.id, item.size, nextQuantity);
+                            }}
                             className="flex h-7 w-7 items-center justify-center border border-border hover:bg-secondary transition-colors"
                             aria-label="Increase quantity"
+                            disabled={!canIncrease}
                           >
                             <Plus className="h-3 w-3" />
                           </button>
                         </div>
+                          );
+                        })()}
 
                         <button
-                          onClick={() => removeItem(item.id)}
+                          onClick={() => removeItem(item.id, item.size)}
                           className="text-muted-foreground hover:text-destructive transition-colors"
                           aria-label={t('remove')}
                         >

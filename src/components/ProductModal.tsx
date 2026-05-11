@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Product } from '@/types/product';
@@ -14,8 +15,31 @@ interface ProductModalProps {
 export function ProductModal({ product, open, onOpenChange }: ProductModalProps) {
   const { t } = useLanguage();
   const { addItem } = useCart();
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedQuantity, setSelectedQuantity] = useState(1);
 
   if (!product) return null;
+
+  useEffect(() => {
+    if (!product) return;
+    setSelectedSize(null);
+    setSelectedQuantity(1);
+  }, [product, open]);
+
+  const stockQuantity = Number.isFinite(product.quantity) ? product.quantity : 0;
+  const maxQuantity = Math.max(1, stockQuantity);
+  const isOutOfStock = stockQuantity <= 0;
+
+  const requiresSizeSelection = (product.sizes?.length ?? 0) > 0;
+  const canAddToCart = !isOutOfStock && (!requiresSizeSelection || !!selectedSize);
+
+  useEffect(() => {
+    if (isOutOfStock) {
+      setSelectedQuantity(1);
+      return;
+    }
+    setSelectedQuantity((prev) => Math.min(Math.max(1, Number(prev) || 1), maxQuantity));
+  }, [isOutOfStock, maxQuantity]);
 
   const handleAddToCart = () => {
     addItem({
@@ -23,7 +47,8 @@ export function ProductModal({ product, open, onOpenChange }: ProductModalProps)
       name: product.name,
       price: product.price,
       image_url: product.image_url,
-    });
+      size: selectedSize,
+    }, selectedQuantity);
     toast.success(t('addedToCart'));
     onOpenChange(false);
   };
@@ -59,6 +84,73 @@ export function ProductModal({ product, open, onOpenChange }: ProductModalProps)
                 ${product.price.toFixed(2)}
               </p>
 
+              <div className="space-y-4">
+                {product.sizes && product.sizes.length > 0 ? (
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                      {t('sizesLabel')}
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {product.sizes.map((size) => (
+                        <Button
+                          key={size}
+                          type="button"
+                          variant={size === selectedSize ? 'default' : 'outline'}
+                          size="sm"
+                          className="rounded-full px-4 text-xs uppercase tracking-wider"
+                          onClick={() => setSelectedSize(size)}
+                        >
+                          {size}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
+                <div className="space-y-2">
+                  <h4 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                    {t('quantityLabel')}
+                  </h4>
+                  <div className="flex items-center gap-3">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      className="h-9 w-9 rounded-full"
+                      onClick={() =>
+                        setSelectedQuantity((prev) => {
+                          const next = Math.max(1, Number(prev) - 1);
+                          return Number.isFinite(next) ? next : 1;
+                        })
+                      }
+                      disabled={isOutOfStock || selectedQuantity <= 1}
+                      aria-label="Decrease quantity"
+                    >
+                      -
+                    </Button>
+                    <span className="min-w-8 text-center text-sm text-foreground">
+                      {selectedQuantity}
+                    </span>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      className="h-9 w-9 rounded-full"
+                      onClick={() =>
+                        setSelectedQuantity((prev) => {
+                          const next = Math.min(maxQuantity, Number(prev) + 1);
+                          return Number.isFinite(next) ? next : 1;
+                        })
+                      }
+                      disabled={isOutOfStock || selectedQuantity >= maxQuantity}
+                      aria-label="Increase quantity"
+                    >
+                      +
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
               {product.description && (
                 <div className="space-y-2">
                   <h4 className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
@@ -75,6 +167,7 @@ export function ProductModal({ product, open, onOpenChange }: ProductModalProps)
               onClick={handleAddToCart}
               className="mt-8 w-full bg-foreground text-background hover:bg-foreground/90 font-medium tracking-wider"
               size="lg"
+              disabled={!canAddToCart}
             >
               {t('addToCart')}
             </Button>

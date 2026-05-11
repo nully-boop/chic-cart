@@ -6,9 +6,18 @@ interface EmptyStateProps {
   description: string;
   actionLabel: string;
   onAction: () => void;
+  secondaryActionLabel?: string;
+  onSecondaryAction?: () => void;
 }
 
-export function EmptyState({ title, description, actionLabel, onAction }: EmptyStateProps) {
+export function EmptyState({
+  title,
+  description,
+  actionLabel,
+  onAction,
+  secondaryActionLabel,
+  onSecondaryAction,
+}: EmptyStateProps) {
   return (
     <div className="flex min-h-[320px] flex-col items-center justify-center px-4 text-center animate-in fade-in duration-500">
       <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
@@ -18,13 +27,24 @@ export function EmptyState({ title, description, actionLabel, onAction }: EmptyS
       <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
         {description}
       </p>
-      <Button
-        onClick={onAction}
-        variant="outline"
-        className="mt-6 rounded-full px-6 text-xs uppercase tracking-[0.2em]"
-      >
-        {actionLabel}
-      </Button>
+      <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row">
+        {secondaryActionLabel && onSecondaryAction ? (
+          <Button
+            onClick={onSecondaryAction}
+            variant="secondary"
+            className="rounded-full px-6 text-xs uppercase tracking-[0.2em]"
+          >
+            {secondaryActionLabel}
+          </Button>
+        ) : null}
+        <Button
+          onClick={onAction}
+          variant="outline"
+          className="rounded-full px-6 text-xs uppercase tracking-[0.2em]"
+        >
+          {actionLabel}
+        </Button>
+      </div>
     </div>
   );
 }

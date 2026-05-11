@@ -5,5 +5,7 @@ export interface Product {
   image_url: string;
   description: string | null;
   category: string | null;
+  quantity: number;
+  sizes: string[] | null;
   created_at: string;
 }

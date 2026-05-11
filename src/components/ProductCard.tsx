@@ -1,5 +1,10 @@
+import type { MouseEvent } from 'react';
+import { ShoppingCart } from 'lucide-react';
 import { Product } from '@/types/product';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useCart } from '@/contexts/CartContext';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 interface ProductCardProps {
   product: Product;
@@ -8,6 +13,21 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onClick }: ProductCardProps) {
   const { t } = useLanguage();
+  const { addItem } = useCart();
+  const isOutOfStock = product.quantity <= 0;
+
+  const handleAddToCart = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    if (isOutOfStock) return;
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image_url: product.image_url,
+      size: null,
+    });
+    toast.success(t('addedToCart'));
+  };
 
   return (
     <article
@@ -23,27 +43,35 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
           className="h-full w-full object-cover product-image-hover"
           loading="lazy"
         />
-        {/* Hover Overlay */}
-        <div className="absolute inset-0 flex items-end justify-center bg-foreground/0 opacity-0 transition-all duration-300 group-hover:bg-foreground/5 group-hover:opacity-100">
-          <span className="mb-6 text-sm font-medium tracking-wider text-foreground opacity-0 transition-all duration-300 group-hover:opacity-100">
-            {t('viewDetails')}
-          </span>
-        </div>
       </div>
 
       {/* Product Info */}
-      <div className="space-y-1">
+      <div className="space-y-3">
         {product.category && (
           <p className="text-xs uppercase tracking-wider text-muted-foreground">
             {product.category}
           </p>
         )}
-        <h3 className="font-serif text-lg text-foreground group-hover:text-accent transition-colors">
-          {product.name}
-        </h3>
-        <p className="text-sm text-muted-foreground">
-          ${product.price.toFixed(2)}
-        </p>
+        <div className="flex items-start justify-between gap-3">
+          <div className="space-y-1">
+            <h3 className="font-serif text-lg text-foreground group-hover:text-accent transition-colors">
+              {product.name}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              ${product.price.toFixed(2)}
+            </p>
+          </div>
+          <Button
+            onClick={handleAddToCart}
+            variant="outline"
+            size="icon"
+            className="h-9 w-9 rounded-full"
+            aria-label={t('addToCart')}
+            disabled={isOutOfStock}
+          >
+            <ShoppingCart className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </article>
   );

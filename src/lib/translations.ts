@@ -12,6 +12,8 @@ export const translations = {
     description: 'Description',
     viewDetails: 'View Details',
     category: 'Category',
+    quantityLabel: 'Quantity',
+    sizesLabel: 'Sizes',
     
     // Cart
     yourCart: 'Your Cart',
@@ -45,6 +47,7 @@ export const translations = {
     noResultsTitle: 'No products found',
     noResultsDescription: 'We couldn\'t find anything matching your search. Try a different term or browse all products.',
     clearFilters: 'Clear filters',
+    browseAllProducts: 'Browse all products',
   },
   fr: {
     // Navigation
@@ -57,6 +60,8 @@ export const translations = {
     description: 'Description',
     viewDetails: 'Voir les détails',
     category: 'Catégorie',
+    quantityLabel: 'Quantité',
+    sizesLabel: 'Tailles',
     
     // Cart
     yourCart: 'Votre panier',
@@ -90,6 +95,7 @@ export const translations = {
     noResultsTitle: 'Aucun produit trouvé',
     noResultsDescription: 'Nous n\'avons rien trouvé correspondant à votre recherche. Essayez un autre terme ou parcourez tous les produits.',
     clearFilters: 'Effacer les filtres',
+    browseAllProducts: 'Parcourir tous les produits',
   },
 } as const;
 

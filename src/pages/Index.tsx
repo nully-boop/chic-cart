@@ -119,6 +119,8 @@ const Index = () => {
                   setSearchQuery('');
                   setSelectedCategory('all');
                 }}
+                secondaryActionLabel={t('browseAllProducts')}
+                onSecondaryAction={() => setSearchQuery('')}
               />
             ) : (
               <ProductGrid
