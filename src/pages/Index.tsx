@@ -1,7 +1,8 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { HeroSection } from '@/components/HeroSection';
 import { ProductGrid } from '@/components/ProductGrid';
+import { CategoryFilter } from '@/components/CategoryFilter';
 import { ProductModal } from '@/components/ProductModal';
 import { CartSidebar } from '@/components/CartSidebar';
 import { useProducts } from '@/hooks/useProducts';
@@ -14,7 +15,19 @@ const Index = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const productsRef = useRef<HTMLElement>(null);
+
+  const categories = useMemo(() => {
+    if (!products) return [];
+    return Array.from(new Set(products.map((p) => p.category).filter((c): c is string => !!c))).sort();
+  }, [products]);
+
+  const filteredProducts = useMemo(() => {
+    if (!products) return [];
+    if (selectedCategory === 'all') return products;
+    return products.filter((p) => p.category === selectedCategory);
+  }, [products, selectedCategory]);
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
@@ -41,9 +54,18 @@ const Index = () => {
               </h2>
               <div className="mt-4 mx-auto h-px w-24 bg-accent" />
             </div>
-            
+
+            {!isLoading && !error && categories.length > 0 && (
+              <CategoryFilter
+                categories={categories}
+                selected={selectedCategory}
+                onSelect={setSelectedCategory}
+                allLabel={t('allCategories')}
+              />
+            )}
+
             <ProductGrid
-              products={products || []}
+              products={filteredProducts}
               isLoading={isLoading}
               error={error}
               onProductClick={handleProductClick}

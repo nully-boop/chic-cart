@@ -39,6 +39,8 @@ export const translations = {
     shopCollection: 'Shop Collection',
     newArrivals: 'New Arrivals',
     featuredCollection: 'Featured Collection',
+    allCategories: 'All',
+    noProducts: 'No products in this category',
   },
   fr: {
     // Navigation
@@ -78,6 +80,8 @@ export const translations = {
     shopCollection: 'Voir la Collection',
     newArrivals: 'Nouveautés',
     featuredCollection: 'Collection Vedette',
+    allCategories: 'Tout',
+    noProducts: 'Aucun produit dans cette catégorie',
   },
 } as const;
 
