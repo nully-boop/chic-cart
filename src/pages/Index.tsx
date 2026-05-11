@@ -7,6 +7,7 @@ import { CategoryFilterSkeleton } from '@/components/CategoryFilterSkeleton';
 import { ProductModal } from '@/components/ProductModal';
 import { CartSidebar } from '@/components/CartSidebar';
 import { SearchBar } from '@/components/SearchBar';
+import { EmptyState } from '@/components/EmptyState';
 import { useProducts } from '@/hooks/useProducts';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Product } from '@/types/product';
@@ -109,12 +110,24 @@ const Index = () => {
               />
             ) : null}
 
-            <ProductGrid
-              products={filteredProducts}
-              isLoading={isLoading}
-              error={error}
-              onProductClick={handleProductClick}
-            />
+            {!isLoading && !error && filteredProducts.length === 0 && products && products.length > 0 ? (
+              <EmptyState
+                title={t('noResultsTitle')}
+                description={t('noResultsDescription')}
+                actionLabel={t('clearFilters')}
+                onAction={() => {
+                  setSearchQuery('');
+                  setSelectedCategory('all');
+                }}
+              />
+            ) : (
+              <ProductGrid
+                products={filteredProducts}
+                isLoading={isLoading}
+                error={error}
+                onProductClick={handleProductClick}
+              />
+            )}
           </div>
         </section>
       </main>
