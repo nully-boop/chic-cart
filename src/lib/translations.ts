@@ -42,6 +42,9 @@ export const translations = {
     allCategories: 'All',
     noProducts: 'No products in this category',
     searchPlaceholder: 'Search products...',
+    noResultsTitle: 'No products found',
+    noResultsDescription: 'We couldn\'t find anything matching your search. Try a different term or browse all products.',
+    clearFilters: 'Clear filters',
   },
   fr: {
     // Navigation
@@ -84,6 +87,9 @@ export const translations = {
     allCategories: 'Tout',
     noProducts: 'Aucun produit dans cette catégorie',
     searchPlaceholder: 'Rechercher des produits...',
+    noResultsTitle: 'Aucun produit trouvé',
+    noResultsDescription: 'Nous n\'avons rien trouvé correspondant à votre recherche. Essayez un autre terme ou parcourez tous les produits.',
+    clearFilters: 'Effacer les filtres',
   },
 } as const;
 
