@@ -18,7 +18,10 @@ export function ProductModal({ product, open, onOpenChange }: ProductModalProps)
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
 
-  if (!product) return null;
+  // Compute values needed for hooks before any early returns
+  const stockQuantity = product ? (Number.isFinite(product.quantity) ? product.quantity : 0) : 0;
+  const maxQuantity = Math.max(1, stockQuantity);
+  const isOutOfStock = stockQuantity <= 0;
 
   useEffect(() => {
     if (!product) return;
@@ -26,20 +29,18 @@ export function ProductModal({ product, open, onOpenChange }: ProductModalProps)
     setSelectedQuantity(1);
   }, [product, open]);
 
-  const stockQuantity = Number.isFinite(product.quantity) ? product.quantity : 0;
-  const maxQuantity = Math.max(1, stockQuantity);
-  const isOutOfStock = stockQuantity <= 0;
-
-  const requiresSizeSelection = (product.sizes?.length ?? 0) > 0;
-  const canAddToCart = !isOutOfStock && (!requiresSizeSelection || !!selectedSize);
-
   useEffect(() => {
-    if (isOutOfStock) {
+    if (!product || isOutOfStock) {
       setSelectedQuantity(1);
       return;
     }
     setSelectedQuantity((prev) => Math.min(Math.max(1, Number(prev) || 1), maxQuantity));
-  }, [isOutOfStock, maxQuantity]);
+  }, [product, isOutOfStock, maxQuantity]);
+
+  if (!product) return null;
+
+  const requiresSizeSelection = (product.sizes?.length ?? 0) > 0;
+  const canAddToCart = !isOutOfStock && (!requiresSizeSelection || !!selectedSize);
 
   const handleAddToCart = () => {
     addItem({
