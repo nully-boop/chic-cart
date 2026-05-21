@@ -1,73 +1,84 @@
-# Welcome to your Lovable project
+# Chic Cart
 
-## Project info
+An elegant e-commerce shopping cart application with a customer storefront and comprehensive admin dashboard for managing products, orders, and analytics.
 
-**URL**: https://lovable.dev/projects/788e31da-7684-48bd-878a-93ea69fba18a
+## Features
 
-## How can I edit this code?
+### Customer Storefront
+- Browse and search products
+- Add items to shopping cart
+- Secure checkout experience
+- Multi-language support
 
-There are several ways of editing your application.
+### Admin Dashboard
+- Secure admin authentication
+- Product management (create, edit, delete)
+- Order tracking and management
+- Sales analytics and insights
+- Inventory overview
 
-**Use Lovable**
+## Getting Started
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/788e31da-7684-48bd-878a-93ea69fba18a) and start prompting.
+### Prerequisites
 
-Changes made via Lovable will be committed automatically to this repo.
+- Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+### Installation
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Step 1: Clone the repository
+git clone https://github.com/nully-boop/chic-cart.git
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Step 2: Navigate to the project directory
+cd chic-cart
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Step 3: Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Step 4: Start the development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The application will be available at `http://localhost:5173`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Development
 
-**Use GitHub Codespaces**
+### Available Scripts
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- `npm run dev` - Start the development server with hot reload
+- `npm run build` - Build the application for production
+- `npm run lint` - Run ESLint to check code quality
+- `npm run preview` - Preview the production build locally
 
-## What technologies are used for this project?
+## Technologies
 
 This project is built with:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- **Vite** - Fast build tool and dev server
+- **React** - UI library
+- **TypeScript** - Type-safe JavaScript
+- **React Router** - Client-side routing
+- **shadcn-ui** - High-quality React components
+- **Tailwind CSS** - Utility-first CSS framework
+- **React Hook Form** - Efficient form handling
+- **TanStack React Query** - Data fetching and caching
+- **Supabase** - Backend and database
+- **Recharts** - Data visualization
+- **Radix UI** - Accessible component primitives
 
-## How can I deploy this project?
+## Project Structure
 
-Simply open [Lovable](https://lovable.dev/projects/788e31da-7684-48bd-878a-93ea69fba18a) and click on Share -> Publish.
+```
+src/
+├── components/        # Reusable React components
+├── pages/            # Page components (storefront, admin, auth)
+├── contexts/         # React contexts (Cart, Language, Admin Auth)
+├── hooks/            # Custom React hooks
+├── integrations/     # External service integrations
+├── types/            # TypeScript type definitions
+└── lib/              # Utility functions
+```
 
-## Can I connect a custom domain to my Lovable project?
+## License
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+This project is private and proprietary.
